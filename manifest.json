@@ -11,7 +11,7 @@
         "version": "0.0.1",
         "changelog": "Initial release with external chapter support and client-side injection.",
         "targetAbi": "10.11.6.0",
-        "sourceUrl": "https://github.com/BetaZay/ChapterInjector/releases/download/v0.0.1/chapterinjector_1.0.0.0.zip",
+        "sourceUrl": "https://github.com/BetaZay/ChapterPlugin/releases/download/v0.0.1/chapterinjector_1.0.0.0.zip",
         "checksum": "ee33988a17c115fb63a1d97181b0a3610f2277c7439a6c9f230bc46a73123d7b",
         "timestamp": "2026-02-02 22:54:00"
       }
