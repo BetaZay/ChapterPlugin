@@ -20,12 +20,14 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// <param name="applicationPaths">Instance of the <see cref="IApplicationPaths"/> interface.</param>
     /// <param name="xmlSerializer">Instance of the <see cref="IXmlSerializer"/> interface.</param>
     /// <param name="logger">Instance of the <see cref="Microsoft.Extensions.Logging.ILogger{Plugin}"/> interface.</param>
-    public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, Microsoft.Extensions.Logging.ILogger<Plugin> logger)
+    /// <param name="configurationManager">Instance of the <see cref="MediaBrowser.Controller.Configuration.IServerConfigurationManager"/> interface.</param>
+    public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, Microsoft.Extensions.Logging.ILogger<Plugin> logger, MediaBrowser.Controller.Configuration.IServerConfigurationManager configurationManager)
         : base(applicationPaths, xmlSerializer)
     {
         Instance = this;
         ViewableApplicationPaths = applicationPaths;
         Logger = logger;
+        ServerConfigurationManager = configurationManager;
     }
 
     /// <summary>
@@ -37,6 +39,11 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     /// Gets the logger.
     /// </summary>
     public Microsoft.Extensions.Logging.ILogger<Plugin> Logger { get; private set; }
+
+    /// <summary>
+    /// Gets the server configuration manager.
+    /// </summary>
+    public MediaBrowser.Controller.Configuration.IServerConfigurationManager ServerConfigurationManager { get; }
 
     /// <inheritdoc />
     public override string Name => "ChapterInjector";

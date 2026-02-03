@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Net;
 using Microsoft.Extensions.Logging;
 
 namespace ChapterInjector.Helpers
@@ -77,7 +78,30 @@ namespace ChapterInjector.Helpers
         private static string GetScriptElement()
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0.0";
-            return $"<script plugin=\"ChapterInjector\" version=\"{version}\" src=\"ExternalChapters/ClientScript\" defer></script>";
+            string basePath = string.Empty;
+            var logger = Plugin.Instance?.Logger;
+
+            try
+            {
+                var networkConfig = Plugin.Instance?.ServerConfigurationManager.GetNetworkConfiguration();
+                if (networkConfig != null)
+                {
+                    var configType = networkConfig.GetType();
+                    var basePathProperty = configType.GetProperty("BaseUrl");
+                    var confBasePath = basePathProperty?.GetValue(networkConfig)?.ToString()?.Trim('/');
+
+                    if (!string.IsNullOrEmpty(confBasePath))
+                    {
+                        basePath = $"/{confBasePath}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Unable to get base path from config, using default.");
+            }
+
+            return $"<script plugin=\"ChapterInjector\" version=\"{version}\" src=\"{basePath}/ExternalChapters/ClientScript\" defer></script>";
         }
     }
 }
