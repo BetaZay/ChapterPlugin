@@ -8,6 +8,14 @@
     "overview": "Supports OGM and Matroska chapter files alongside media.",
     "versions": [
       {
+        "version": "0.0.2",
+        "changelog": "Fixes",
+        "targetAbi": "10.11.6.0",
+        "sourceUrl": "https://github.com/BetaZay/ChapterPlugin/releases/download/v0.0.2/chapterinjector_1.0.0.0.zip",
+        "checksum": "546E2CF02986F87B2C943C6D2CB5D4E8",
+        "timestamp": "2026-02-02 22:54:00"
+      },
+      {
         "version": "0.0.1",
         "changelog": "Initial release with external chapter support and client-side injection.",
         "targetAbi": "10.11.6.0",
