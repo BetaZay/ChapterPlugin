@@ -16,9 +16,31 @@ namespace ChapterInjector.Helpers
         private const string ScriptTagRegex = "<script plugin=\"ChapterInjector\".*?></script>";
 
         /// <summary>
-        /// Injects the client script into the index.html file.
+        /// Callback for FileTransformation plugin.
         /// </summary>
-        public static void Inject()
+        /// <param name="payload">The payload.</param>
+        /// <returns>The modified content.</returns>
+        public static string FileTransformer(Models.PatchRequestPayload payload)
+        {
+            var logger = Plugin.Instance.Logger;
+            logger.LogInformation("ChapterInjector: Attempting to inject script via FileTransformation plugin.");
+
+            string scriptElement = GetScriptElement();
+            string indexContents = payload.Contents!;
+
+            // Remove old script tag if exists (regex)
+            indexContents = Regex.Replace(indexContents, ScriptTagRegex, string.Empty);
+            
+            // Insert at end of body
+            string regex = Regex.Replace(indexContents, "(</body>)", $"{scriptElement}$1");
+            
+            return regex;
+        }
+
+        /// <summary>
+        /// Injects the client script into the index.html file directly.
+        /// </summary>
+        public static void Direct()
         {
             if (Plugin.Instance == null)
             {
@@ -48,11 +70,11 @@ namespace ChapterInjector.Helpers
 
                 if (indexContents.Contains(scriptElement, StringComparison.OrdinalIgnoreCase))
                 {
-                    logger.LogDebug("Client script already injected in {File}", indexFile);
+                    logger.LogError("ChapterInjector: Client script already injected in {File}", indexFile);
                     return;
                 }
 
-                logger.LogInformation("Injecting ChapterInjector client script into {File}", indexFile);
+                logger.LogError("ChapterInjector: Injecting ChapterInjector client script into {File}", indexFile);
 
                 // Remove old script tag if exists (regex)
                 indexContents = Regex.Replace(indexContents, ScriptTagRegex, string.Empty);

@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using ChapterInjector.Helpers;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace ChapterInjector.Services
 {
@@ -39,8 +43,45 @@ namespace ChapterInjector.Services
         /// <inheritdoc />
         public Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Executing StartupService to inject client script.");
-            IndexHtmlInjector.Inject();
+            _logger.LogInformation("ChapterInjector: Executing StartupService to inject client script.");
+
+            List<JObject> payloads = new List<JObject>
+            {
+                new JObject
+                {
+                    { "id", Plugin.Instance!.Id.ToString() },
+                    { "fileNamePattern", "index.html" },
+                    { "callbackAssembly", GetType().Assembly.FullName },
+                    { "callbackClass", typeof(IndexHtmlInjector).FullName },
+                    { "callbackMethod", nameof(IndexHtmlInjector.FileTransformer) }
+                }
+            };
+
+            Assembly? fileTransformationAssembly = AssemblyLoadContext.All
+                .SelectMany(x => x.Assemblies)
+                .FirstOrDefault(x => x.FullName?.Contains(".FileTransformation") ?? false);
+
+            if (fileTransformationAssembly == null)
+            {
+                _logger.LogWarning("ChapterInjector: FileTransformation plugin not found. Fallback to direct injection (requires write permissions).");
+                IndexHtmlInjector.Direct();
+                return Task.CompletedTask;
+            }
+
+            Type? pluginInterfaceType = fileTransformationAssembly.GetType("Jellyfin.Plugin.FileTransformation.PluginInterface");
+            if (pluginInterfaceType == null)
+            {
+                _logger.LogWarning("ChapterInjector: FileTransformation plugin interface not found. Fallback to direct injection.");
+                IndexHtmlInjector.Direct();
+                return Task.CompletedTask;
+            }
+
+            _logger.LogInformation("ChapterInjector: Registering ChapterInjector for FileTransformation plugin.");
+            foreach (JObject payload in payloads)
+            {
+                pluginInterfaceType.GetMethod("RegisterTransformation")?.Invoke(null, new object[] { payload });
+            }
+
             return Task.CompletedTask;
         }
 
