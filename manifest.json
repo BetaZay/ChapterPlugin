@@ -9,7 +9,7 @@
     "versions": [
       {
         "version": "0.0.2",
-        "changelog": "Fixes",
+        "changelog": "Fixes for frontend",
         "targetAbi": "10.11.6.0",
         "sourceUrl": "https://github.com/BetaZay/ChapterPlugin/releases/download/v0.0.2/chapterinjector_1.0.0.0.zip",
         "checksum": "4336F8E157EB6F813CF052BDC08BFAD2",
