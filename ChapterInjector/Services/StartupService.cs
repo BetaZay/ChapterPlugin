@@ -59,7 +59,7 @@ namespace ChapterInjector.Services
 
             Assembly? fileTransformationAssembly = AssemblyLoadContext.All
                 .SelectMany(x => x.Assemblies)
-                .FirstOrDefault(x => x.FullName?.Contains(".FileTransformation") ?? false);
+                .FirstOrDefault(x => x.FullName?.Contains(".FileTransformation", StringComparison.OrdinalIgnoreCase) ?? false);
 
             if (fileTransformationAssembly == null)
             {
