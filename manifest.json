@@ -1,0 +1,20 @@
+[
+  {
+    "guid": "eb5d7894-8eef-4b36-aa6f-5d124e828ce1",
+    "name": "ChapterInjector",
+    "description": "Injects chapters from external files (chapters.txt/xml) into Jellyfin media items.",
+    "owner": "ChapterInjector",
+    "category": "Metadata",
+    "overview": "Supports OGM and Matroska chapter files alongside media.",
+    "versions": [
+      {
+        "version": "0.0.1",
+        "changelog": "Initial release with external chapter support and client-side injection.",
+        "targetAbi": "10.11.6.0",
+        "sourceUrl": "",
+        "checksum": "",
+        "timestamp": "2026-02-02 22:20:00"
+      }
+    ]
+  }
+]
